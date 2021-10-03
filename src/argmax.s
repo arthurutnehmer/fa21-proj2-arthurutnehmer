@@ -17,35 +17,24 @@
 argmax:
 
     # Prologue
-    #save index at beggining
     add a5,x0,x0
-    add a5, a1, a5
-    #our current word
-    add a2, x0,x0
-    # out largest index
-    add a3, x0,x0
-    #our largest word
-    add a4, x0,x0
-    # check if array is equal to or less than zero
-    bge x0, a1, exit_code_error
-    # set largest index and word to first
-    addi a3, a3, 1
+    add a5, a1, a5                #save index at beginning
+    add a2, x0,x0                 #our current word
+    add a3, x0,x0               # out largest index
+    add a4, x0,x0              #our largest word
+    bge x0, a1, exit_code_error   # check if array is equal to or less than zero
+    addi a3, a3, 1                     # set largest index and word to first
     lw a4, 0(a0)
 loop_start:
-    # load word into a2
-    lw a2, 0(a0)
-    # if our current word is largest keep going.
-    bge a4, a2 larger
-    # if current is largest we save it.
-    mv a4, a2
+    lw a2, 0(a0)      # load word into a2
+    bge a4, a2 larger  # if our current word is largest keep going.
+    mv a4, a2         # if current is largest we save it.
     mv a3, a1
 
     larger:
-    # increment address
-    addi a0, a0, 4
+    addi a0, a0, 4   # increment address
 
-    # sub from index
-    addi a1, a1, -1
+    addi a1, a1, -1    # sub from index
 
 	bgt a1, x0, loop_start
 
