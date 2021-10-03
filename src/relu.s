@@ -31,8 +31,7 @@ loop_start:
     #sub from index
     addi a1, a1, -1
     
-	bge a1, x0, loop_start
-
+	bgt a1, x0, loop_start
 
 loop_end:
     # Epilogue
