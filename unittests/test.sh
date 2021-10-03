@@ -1,1 +1,2 @@
-make test-abs
+make test-relu
+#make help
