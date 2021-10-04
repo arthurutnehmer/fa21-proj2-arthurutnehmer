@@ -56,6 +56,28 @@ class TestAbsLoss(TestCase):
         # generate the `assembly/TestAbsLoss_test_simple.s` file and run it through venus
         t.execute()
 
+    def test_empty(self):
+        # load the test for abs_loss.s
+        t = AssemblyTest(self, "abs_loss.s")
+        # create array0 in the data section
+        array0 = t.array([])
+        # load address of `array0` into register a0
+        t.input_array("a0", array0)
+        # create array1 in the data section
+        array1 = t.array([])
+        # load address of `array1` into register a1
+        t.input_array("a1", array1)
+        # set a2 to the length of the array
+        t.input_scalar("a2", len(array1))
+        # create a result array in the data section (fill values with -1)
+        array2 = t.array([-1,-1,-1,-1,-1,-1,-1,-1,-1])
+        # load address of `array2` into register a3
+        t.input_array("a3", array2)
+        # call the `abs_loss` function
+        t.call("abs_loss")
+        # generate the `assembly/TestAbsLoss_test_simple.s` file and run it through venus
+        t.execute(code=123)
+
     @classmethod
     def tearDownClass(cls):
         print_coverage("abs_loss.s", verbose = False)
@@ -169,6 +191,25 @@ class TestZeroOneLoss(TestCase):
         t.check_array(array2, [1,0,0,0,0,1,0,0,0])
         # generate the `assembly/TestZeroOneLoss_test_simple.s` file and run it through venus
         t.execute()
+
+    def test_empty(self):
+        # load the test for zero_one_loss.s
+        t = AssemblyTest(self, "zero_one_loss.s")
+        # create input arrays in the data section
+        array0 = t.array([])
+        array1 = t.array([])
+        # load array addresses into argument registers
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        # load array length into argument register
+        t.input_scalar("a2", len(array1))
+        # create a result array in the data section (fill values with -1)
+        array2 = t.array([-1,-1,-1,-1,-1,-1,-1,-1,-1])
+        # load result array address into argument register
+        t.input_array("a3", array2)
+        # call the `zero_one_loss` function
+        t.call("zero_one_loss")
+        t.execute(code=123)
 
     @classmethod
     def tearDownClass(cls):
