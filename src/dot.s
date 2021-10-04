@@ -64,12 +64,12 @@ loop_end:
 
 error_57:
     add a1, x0, x0
-    addi a1, a0, 57
+    addi a1, x0, 57
     call exit2
 
 
 error_58:
     add a1, x0,x0
-    addi a1, a0, 58
+    addi a1, x0, 58
     call exit2
 

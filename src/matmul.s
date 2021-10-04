@@ -113,5 +113,5 @@ loop_start:
 
 error_59:
     add a1, x0,x0
-    addi a1, a0, 59
+    addi a1, x0, 59
     call exit2
