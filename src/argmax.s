@@ -16,13 +16,14 @@
 # =================================================================
 argmax:
 
+    bge x0, a1, exit_code_error   # check if array is equal to or less than zero
     # Prologue
     add a5,x0,x0
-    add a5, a1, a5                #save index at beginning
-    add a2, x0,x0                 #our current word
+    add a5, a1, a5                # save index at beginning
+    add a2, x0,x0                 # our current word
     add a3, x0,x0               # out largest index
     add a4, x0,x0              #our largest word
-    bge x0, a1, exit_code_error   # check if array is equal to or less than zero
+
     addi a3, a3, 1                     # set largest index and word to first
     lw a4, 0(a0)
 loop_start:
@@ -44,5 +45,7 @@ loop_end:
 	ret
 
 exit_code_error:
-    add a0, x0, x0
-    addi a0, a0, 57
+    add a1, x0, x0
+    addi a1, x0, 57
+    call exit2
+

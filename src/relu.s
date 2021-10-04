@@ -38,4 +38,4 @@ loop_end:
 	ret
 exit_code_error:
     add a0, x0, x0
-    addi a0, a0, 57
+    addi a0, x0, 57
