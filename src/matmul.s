@@ -44,11 +44,9 @@ matmul:
     addi s0, s0, 4   # size to increment by (4 bytes for word)
     mul s0, s0, a2  # size to jump in order to traverse A by row
 
-    add s1, x0, x0  # zero out s1
-    add s1, a3, x0  # set s1 to the address of the beginning of B.
+    mv s1, a3 # set s1 to the address of the beginning of B.
 
-    add s3, x0,x0  #value for stride of B
-    add s3, a5 ,x0  #value for stride of B
+    mv s3, a5  #value for stride of B is s3
 
 loop_start:
     add a3, x0, s1        # restart the address for B back to the beginning
@@ -66,8 +64,7 @@ loop_start:
         sw a4, 16(sp)
         sw a5, 20(sp)
         sw a6, 24(sp)
-        sw s0, 28(sp)
-        sw s1, 32(sp)
+
                      # a0 is already start of A
         mv a1, a3    # set a1 to pointer for B
                      # a2 already width of the vectors
@@ -88,8 +85,7 @@ loop_start:
         lw a4, 16(sp)
         lw a5, 20(sp)
         lw a6, 24(sp)
-        lw s0, 28(sp)
-        lw s1, 32(sp)
+
         addi sp, sp, 36
 
         sw t5, 0(a6) # save the value in array
