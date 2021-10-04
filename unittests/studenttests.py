@@ -179,7 +179,7 @@ class TestInitializeZero(TestCase):
         # call the `initialize_zero` function
         t.call("initialize_zero")
         # check that the register a0 contains the correct array (hint: look at the check_array_pointer function in framework.py)
-        # TODO
+        t.check_array("a0", [0,0,0,0,0,0,0,0,0])
         t.execute()
 
     @classmethod
