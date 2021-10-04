@@ -1,4 +1,4 @@
 #make test-relu
 #make help
-make test-argmax
-#make test-dot
+#make test-argmax
+make test-dot
