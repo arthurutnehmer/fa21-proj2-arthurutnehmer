@@ -73,8 +73,8 @@ loop_start:
         add a4, x0, s3  # a4  (B) has a stride equal to its width s3
 
         jal ra dot
-        add t5, x0,x0  # set s3 to zero
-        add t5, a0, x0  # set t5 to ret value
+
+        mv t5, a0 # set t5 to ret value
 
 
         # call finished now bring back parameters
