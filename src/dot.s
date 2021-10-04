@@ -24,10 +24,11 @@ dot:
     bge x0, a4, error_58
 
     # Prologue
-    addi sp,sp, -12
+    addi sp,sp, -16
     sw s0, 0(sp)
     sw s1, 4(sp)
     sw s2, 8(sp)
+    sw ra, 12(sp)
 
     add s0, x0, x0  # clear s0 (first array num)
     add s1, x0, x0  # clear s1 (second array num)
@@ -57,8 +58,9 @@ loop_end:
     lw s0, 0(sp)
     lw s1, 4(sp)
     lw s2, 8(sp)
-    addi sp, sp, 12
-    ret
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    jr ra
 
 error_57:
     add a1, x0, x0

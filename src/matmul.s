@@ -5,12 +5,12 @@
 # FUNCTION: Matrix Multiplication of 2 integer matrices
 # 	d = matmul(m0, m1)
 # Arguments:
-# 	a0 (int*)  is the pointer to the start of m0
-#	a1 (int)   is the # of rows (height) of m0
-#	a2 (int)   is the # of columns (width) of m0
-#	a3 (int*)  is the pointer to the start of m1
-# 	a4 (int)   is the # of rows (height) of m1
-#	a5 (int)   is the # of columns (width) of m1
+# 	a0 (int*)  is the pointer to the start of A
+#	a1 (int)   is the # of rows (height) of A
+#	a2 (int)   is the # of columns (width) of A
+#	a3 (int*)  is the pointer to the start of B
+# 	a4 (int)   is the # of rows (height) of B
+#	a5 (int)   is the # of columns (width) of B
 #	a6 (int*)  is the pointer to the the start of d
 # Returns:
 #	None (void), sets d = matmul(m0, m1)
@@ -26,38 +26,91 @@
 matmul:
 
     # Error checks
+    bge x0, a1, error_59  # A height
+    bge x0, a2, error_59  # A width
+    bge x0, a4, error_59  # B height
+    bge x0, a5, error_59  # B width
+    bne a2, a4, error_59  # width A and height B
 
+    #prologue
+    addi sp, sp -16
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+    sw s2, 8(sp)
+    sw ra, 12(sp)
 
-    # Prologue
+    add s0, x0, x0   # set traverse word size to 0
+    addi s0, s0, 4   # size to increment by (4 bytes for word)
+    mul s0, s0, a2  # size to jump in order to traverse A by row
 
-
-outer_loop_start:
-
-
-
-
-inner_loop_start:
-
-
-
-
-
-
-
-
-
-
-
-
-inner_loop_end:
+    add s1, x0, x0  # zero out s1
+    add s1, a3, x0  # set s1 to the address of the beginning of B.
 
 
 
+loop_start:
+    mv a3, s1         # restart the address for B back to the beginning
+    inner_loop_start:
 
-outer_loop_end:
+
+        # have to backup here for call
+        addi sp,sp, -36
+        sw a0, 0(sp)
+        sw a1, 4(sp)
+        sw a2, 8(sp)
+        sw a3, 12(sp)
+        sw a4, 16(sp)
+        sw a5, 20(sp)
+        sw a6, 24(sp)
+        sw s0, 28(sp)
+        sw s1, 32(sp)
+                     # a0 is already start of A
+        mv a1, a3    # set a1 to pointer for B
+                     # a2 already width of the vectors
+        mv a3, x0    # set a3 to 0
+        addi a3, a3, 1 # a3 (A) has a stride of 1
+        mv a4, a5  # a4  (B) has a stride equal to its width a5
+
+        jal ra dot
+        add t5, x0,x0  # set s3 to zero
+        add t5, a0, x0  # set t5 to ret value
+
+
+        # call finished now bring back parameters
+        lw a0, 0(sp)
+        lw a1, 4(sp)
+        lw a2, 8(sp)
+        lw a3, 12(sp)
+        lw a4, 16(sp)
+        lw a5, 20(sp)
+        lw a6, 24(sp)
+        lw s0, 28(sp)
+        lw s1, 32(sp)
+        addi sp, sp, 36
+
+        sw t5, 0(a6) # save the value in array
+
+        addi a6, a6, 4    # increment the array d
+        addi a3, a3, 4      # increment array address of B by offset (word size * m)
+        addi a5, a5, -1     # subtract from height of A
+        bgt a5, x0, inner_loop_start  # loop if more index
+
+
+    add a0, a0, s0      # increment array address of A by offset (word size * m)
+    addi a1, a1, -1     # subtract from height of A
+	bgt a1, x0, loop_start  # loop if more index
 
 
     # Epilogue
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    lw ra, 12(sp)
+    addi sp,sp, 16
+    jr ra
 
 
-    ret
+error_59:
+    add a1, x0,x0
+    addi a1, a0, 59
+    call exit2
