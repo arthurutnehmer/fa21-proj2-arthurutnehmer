@@ -33,11 +33,12 @@ matmul:
     bne a2, a4, error_59  # width A and height B
 
     #prologue
-    addi sp, sp -16
+    addi sp, sp -20
     sw s0, 0(sp)
     sw s1, 4(sp)
     sw s2, 8(sp)
-    sw ra, 12(sp)
+    sw s3, 12(sp)
+    sw ra, 16(sp)
 
     add s0, x0, x0   # set traverse word size to 0
     addi s0, s0, 4   # size to increment by (4 bytes for word)
@@ -46,10 +47,13 @@ matmul:
     add s1, x0, x0  # zero out s1
     add s1, a3, x0  # set s1 to the address of the beginning of B.
 
-
+    add s3, x0,x0  #value for stride of B
+    add s3, a5 ,x0  #value for stride of B
 
 loop_start:
-    mv a3, s1         # restart the address for B back to the beginning
+    add a3, x0, s1        # restart the address for B back to the beginning
+    add a5, x0, x0
+    add, a5, x0, s3   #reset the a5 width for B back to zero
     inner_loop_start:
 
 
@@ -67,9 +71,9 @@ loop_start:
                      # a0 is already start of A
         mv a1, a3    # set a1 to pointer for B
                      # a2 already width of the vectors
-        mv a3, x0    # set a3 to 0
+        add a3, x0, x0    # set a3 to 0
         addi a3, a3, 1 # a3 (A) has a stride of 1
-        mv a4, a5  # a4  (B) has a stride equal to its width a5
+        add a4, x0, s3  # a4  (B) has a stride equal to its width s3
 
         jal ra dot
         add t5, x0,x0  # set s3 to zero
@@ -105,8 +109,9 @@ loop_start:
     lw s0, 0(sp)
     lw s1, 4(sp)
     lw s2, 8(sp)
-    lw ra, 12(sp)
-    addi sp,sp, 16
+    lw s3, 12(sp)
+    lw ra, 16(sp)
+    addi sp,sp, 20
     jr ra
 
 
