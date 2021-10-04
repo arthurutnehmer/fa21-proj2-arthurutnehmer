@@ -241,6 +241,22 @@ class TestInitializeZero(TestCase):
         t.check_array_pointer("a0", [0,0,0,0,0,0,0,0,0])
         t.execute()
 
+    def test_zero_size(self):
+        t = AssemblyTest(self, "initialize_zero.s")
+        # input the length of the desired array
+        t.input_scalar("a0", 0)
+        # call the `initialize_zero` function
+        t.call("initialize_zero")
+        t.execute(code=123)
+
+    def test_huge_size(self):
+        t = AssemblyTest(self, "initialize_zero.s")
+        # input the length of the desired array
+        t.input_scalar("a0", 1000000000002030231030123213)
+        # call the `initialize_zero` function
+        t.call("initialize_zero")
+        t.execute(code=122)
+
     @classmethod
     def tearDownClass(cls):
         print_coverage("initialize_zero.s", verbose = False)
