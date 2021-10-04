@@ -105,6 +105,25 @@ class TestSquaredLoss(TestCase):
         # generate the `assembly/TestSquaredLoss_test_simple.s` file and run it through venus
         t.execute()
 
+    def test_empty_vector(self):
+        # load the test for squared_loss.s
+        t = AssemblyTest(self, "squared_loss.s")
+        # create empty vectors
+        array0 = t.array([])
+        array1 = t.array([])
+        # load array addresses into argument registers
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        # load array length into argument register
+        t.input_scalar("a2", len(array1))
+        # create a result array in the data section (fill values with -1)
+        array2 = t.array([-1,-1,-1,-1,-1,-1,-1,-1,-1])
+        # load result array address into argument register
+        t.input_array("a3", array2)
+        # call the `squared_loss` function
+        t.call("squared_loss")
+        t.execute(code = 123)
+
 
     @classmethod
     def tearDownClass(cls):
@@ -173,7 +192,6 @@ initialize_zero
 class TestInitializeZero(TestCase):
     def test_simple(self):
         t = AssemblyTest(self, "initialize_zero.s")
-
         # input the length of the desired array
         t.input_scalar("a0", 9)
         # call the `initialize_zero` function
