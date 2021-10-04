@@ -175,10 +175,9 @@ class TestInitializeZero(TestCase):
         t = AssemblyTest(self, "initialize_zero.s")
 
         # input the length of the desired array
-        raise NotImplementedError("TODO")
-        # TODO
+        t.input_scalar("a0", 9)
         # call the `initialize_zero` function
-        # TODO
+        t.call("initialize_zero")
         # check that the register a0 contains the correct array (hint: look at the check_array_pointer function in framework.py)
         # TODO
         t.execute()
