@@ -249,13 +249,21 @@ class TestInitializeZero(TestCase):
         t.call("initialize_zero")
         t.execute(code=123)
 
+    def test_negative_size(self):
+        t = AssemblyTest(self, "initialize_zero.s")
+        # input the length of the desired array
+        t.input_scalar("a0", -1)
+        # call the `initialize_zero` function
+        t.call("initialize_zero")
+        t.execute(code=123)
+
     def test_huge_size(self):
         t = AssemblyTest(self, "initialize_zero.s")
         # input the length of the desired array
-        t.input_scalar("a0", 1000000000002030231030123213)
+        t.input_scalar("a0", 9)
         # call the `initialize_zero` function
         t.call("initialize_zero")
-        t.execute(code=122)
+        t.execute(fail='malloc', code=88)
 
     @classmethod
     def tearDownClass(cls):
