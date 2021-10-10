@@ -27,7 +27,20 @@
 read_matrix:
 
     # Prologue
+    addi sp, sp, -16  # Make room on stack
+    sw s0, 0(sp)  #  Memory address of the file name (a0)
+    sw s1, 4(sp)  #  Memory address of the number of rows (a1)
+    sw s2, 8(sp)  #  Memory address of the number of columns (a2)
+    sw ra, 12(sp)
 
+    mv s0, a0  #  set s0 to (a0)
+    mv s1, a1  #  set s1 to (a1)
+    mv s2, a2  #  set s2 to (a2)
+
+
+    mv a1, a0  # Set a1 to file name
+    addi a2, x0, 0 # set a2 to read only
+    jal ra fopen # Open the file
 
 
 
@@ -37,6 +50,10 @@ read_matrix:
 
 
     # Epilogue
-
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    lw ra, 12(sp)
+    addi sp, sp 16
 
     ret
