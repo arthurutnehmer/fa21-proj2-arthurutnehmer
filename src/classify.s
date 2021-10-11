@@ -60,7 +60,6 @@ classify:
     mv s0, a0            # store m0 address as s0
 
 
-
     lw a1 0(a0)
     lw a2 4(a0)
     lw a3 12(a0)

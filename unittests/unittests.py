@@ -467,14 +467,14 @@ class TestClassify(TestCase):
             t.check_stdout(msg)
 
     def test_simple0_input0(self):
-        self.run_classify(input_dir="inputs/simple0/bin", input="input0.bin", output_id=0)
+        self.run_classify(input_dir="inputs/simple0/bin/", input="input0.bin", output_id=0)
 
     def test_simple0_input0_print_out(self):
-        self.run_classify(input_dir="inputs/simple0/bin", input="input0.bin", output_id=0, msg="2")
+        self.run_classify(input_dir="inputs/simple0/bin/", input="input0.bin", output_id=0, msg="2")
 
     def test_fail_malloc(self):
         # unfortunately this test actually does not fail inside classify, but inside read_matrix
-        self.run_classify(input_dir="inputs/simple0/bin", input="input0.bin", output_id=0, fail="malloc", code=88)
+        self.run_classify(input_dir="inputs/simple0/bin/", input="input0.bin", output_id=0, fail="malloc", code=88)
 
     def test_wrong_number_of_args(self):
         t = self.make_test()
