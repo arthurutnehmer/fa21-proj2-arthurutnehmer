@@ -8,3 +8,5 @@
 #make test-read_matrix
 #make test-partB
 #make test-write_matrix
+make test-classify
+#make test-main
