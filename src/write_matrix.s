@@ -25,12 +25,13 @@
 write_matrix:
 
     # Prologue
-    addi sp, sp, -20  #decrement stack pointer
+    addi sp, sp, -24  #decrement stack pointer
     sw s0, 0(sp)   # pointer to filename
     sw s1, 4(sp)   #  pointer to start of matrix
     sw s2, 8(sp)   #  number of rows in matrix.
     sw s3  12(sp)  #  number of columns in matrix.
-    sw ra, 16(sp)
+    sw s4  16(sp)  # The file descriptor
+    sw ra, 20(sp)
 
 
     mv s0, a0  #   Save pointer to filename.
@@ -41,18 +42,31 @@ write_matrix:
     addi a2, x0, 1            # set write permission to 1.
     mv a1, a0                 # Set a1 to file string pointer
     jal ra fopen              # Open file with a1 file name
-    addi a2, x0, -1              # set a2 to -1
-    beq a2, a0, fopen_error   #  Branch if error
+    addi a2, x0, -1           # set a2 to -1
+    beq a2, a0, fopen_error   # Branch if error
+    mv s4, a0                 # Set s4 to file descriptor
 
-    mv a1, a0               # Set a1 to file descriptor
-    mv a2, s1               # set a2 to array to write to file.
-    addi a3, x0, 1              #  rows length to file
-    addi, a4, x0, 4         # 4 bytes per object
+    mv a1, s4               # Set a1 to file descriptor
+    mv a2, s1               # Pointer to write to file
+    addi a3, x0, 2          # Number of elements to write to file
+    addi a4, x0, 4          # Size of each element (4 bytes per object
 
-    jal ra fwrite           #  write to bin
-    bne a0, s3, write_error #  branch if an issue
+    jal ra fwrite           #  write first rows to matrix
+    bne a0, a3, write_error #  branch if an issue
 
 
+
+
+
+
+
+
+
+
+
+    mv a1, s4                       # set a1 to file descriptor
+    jal ra fclose                   # close the file
+    bne a0, x0, close_error        # check if error -1 is present
 
 
     # Epilogue
@@ -60,11 +74,16 @@ write_matrix:
     lw s1, 4(sp)
     lw s2, 8(sp)
     lw s3, 12(sp)
-    lw ra, 16(sp)
-    addi sp, sp 20
+    lw s4, 16(sp)
+    lw ra, 20(sp)
+    addi sp, sp 24
 
     jr ra
 
+
+close_error:
+    addi a1, x0, 90
+    call exit2
 
 fopen_error:
     addi a1, x0, 89
