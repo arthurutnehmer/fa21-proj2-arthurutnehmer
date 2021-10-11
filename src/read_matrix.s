@@ -83,9 +83,18 @@ read_matrix:
     jal ra fread # read the array to heap
     bne a0, s5, read_error
 
+    mv a1, s4
+    jal ra fclose # we close the file.
+    bne a0, x0, close_error
 
 
 
+
+
+
+    mv a0, s6 # set a0 to return pointer
+    mv a1, s1 # set a1 to size
+    mv a2, s2 # set a2 to columns
 
     # Epilogue
     lw s0, 0(sp)
@@ -97,10 +106,12 @@ read_matrix:
     lw s6, 24(sp)
     lw ra, 28(sp)
     addi sp, sp 32
-    mv a0, s6 # set a0 to return pointer
+
+
+
     jr ra
 
- exit_malloc:
+exit_malloc:
     addi a1, x0, 88
     call exit2
 
@@ -110,4 +121,7 @@ fopen_error:
 
 read_error:
     addi a1, x0, 91
+    call exit2
+close_error:
+    addi a1, x0, 90
     call exit2
