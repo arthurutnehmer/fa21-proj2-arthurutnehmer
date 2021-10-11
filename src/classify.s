@@ -21,7 +21,7 @@ classify:
     # Usage:
     #   main.s <M0_PATH> <M1_PATH> <INPUT_PATH> <OUTPUT_PATH>
 
-    addi, a3, x0, 4          # Set a3 to command line args
+    addi, a3, x0, 5          # Set a3 to command line args
     bne a0, a3, args_error   # Branch if a0 has wrong # errors
 
     # Prologue
