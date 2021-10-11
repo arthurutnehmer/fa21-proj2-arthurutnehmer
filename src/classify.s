@@ -21,14 +21,14 @@ classify:
     # Usage:
     #   main.s <M0_PATH> <M1_PATH> <INPUT_PATH> <OUTPUT_PATH>
 
-    addi, a3, x0, 5          # Set a3 to command line args
+    addi, a3, x0, 4          # Set a3 to command line args
     bne a0, a3, args_error   # Branch if a0 has wrong # errors
 
     # Prologue
     addi sp, sp, -48  # Decrement stack pointer
-    sw s0, 0(sp)      # address to first array
-    sw s1, 4(sp)      # address to second array
-    sw s2, 8(sp)      # address to third array
+    sw s0, 0(sp)      # address to first array m0
+    sw s1, 4(sp)      # address to second array m1
+    sw s2, 8(sp)      # address to third array input
     sw s3, 12(sp)     # File path of arrays (a1)
     sw s4, 16(sp)     # saves (a2) print classification
     sw s5, 20(sp)     # save the rows m0
@@ -58,33 +58,31 @@ classify:
     addi a2, sp, 4       # set a2 to the stack pointer offset
     jal ra read_matrix   # pass back a0 (pointer to matrix)
     mv s0, a0            # store m0 address as s0
-
-
-    lw a1 0(a0)
-    lw a2 4(a0)
-    lw a3 12(a0)
-
-    lw a0, 0(sp)
-    lw a1, 4(sp)
-
-
+    lw s5, 0(sp)         # set s5 to rows for m0
+    lw s6, 4(sp)         # set s6 to columns for m0
     addi sp, sp, 8       # restore stack pointer
 
-
-
-
-
-
-
     # Load pretrained m1
-
-
-
-
-
+    lw a0, 8(s3)         # set a0 to pointer to second array m1
+    addi sp, sp -8       # create two spots in the stack
+    mv a1, sp            # Set a1 to the stack pointer
+    addi a2, sp, 4       # set a2 to the stack pointer offset
+    jal ra read_matrix   # pass back a0 (pointer to matrix)
+    mv s1, a0            # set s1 to address to m1
+    lw s7, 0(sp)         # set s7 to rows for m1
+    lw s8, 4(sp)         # set s8 to columns for m1
+    addi sp, sp, 8       # restore stack pointer
 
     # Load input matrix
-
+    lw a0, 12(s3)        # set a0 to pointer to third array input
+    addi sp, sp -8       # create two spots in the stack
+    mv a1, sp            # Set a1 to the stack pointer
+    addi a2, sp, 4       # set a2 to the stack pointer offset
+    jal ra read_matrix   # pass back a0 (pointer to matrix)
+    mv s2, a0            # set s2 to address to input
+    lw s9, 0(sp)         # set s9 to rows for input
+    lw s10, 4(sp)        # set s10 to columns for input
+    addi sp, sp, 8       # restore stack pointer
 
 
 
