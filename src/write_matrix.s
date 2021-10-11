@@ -25,13 +25,14 @@
 write_matrix:
 
     # Prologue
-    addi sp, sp, -24  #decrement stack pointer
+    addi sp, sp, -28  #decrement stack pointer
     sw s0, 0(sp)   # pointer to filename
     sw s1, 4(sp)   #  pointer to start of matrix
     sw s2, 8(sp)   #  number of rows in matrix.
     sw s3  12(sp)  #  number of columns in matrix.
     sw s4  16(sp)  # The file descriptor
-    sw ra, 20(sp)
+    sw s5  20(sp)  # number of elements to write to file
+    sw ra, 24(sp)
 
 
     mv s0, a0  #   Save pointer to filename.
@@ -46,16 +47,48 @@ write_matrix:
     beq a2, a0, fopen_error   # Branch if error
     mv s4, a0                 # Set s4 to file descriptor
 
+
+
+    addi sp, sp, -4         # decrement stack pointer to store
+    sw s2, 0(sp)            # Save s2 at stack pointer
+    mv a1, s4               # Set a1 to file descriptor
+    mv a2, sp               # Pointer to write to file (the stack pointer)
+    addi a3, x0, 1          # Number of elements to write to file
+    addi a4, x0, 4          # Size of each element
+    mv s5, a3               # Backup number of elements to write to file.
+    jal ra fwrite           #  write first rows to matrix
+    bne a0, s5, write_error #  branch if an issue
+    addi sp, sp, 4          # restore the stack
+
+
+
+
+
+    addi sp, sp, -4         # decrement stack pointer to store
+    sw s3, 0(sp)            # Save s3 at stack pointer (number of columns)
+    mv a1, s4               # Set a1 to file descriptor
+    mv a2, sp               # Pointer to write to file (the stack pointer)
+    addi a3, x0, 1          # Number of elements to write to file
+    addi a4, x0, 4          # Size of each element
+    mv s5, a3               # Backup number of elements to write to file.
+    jal ra fwrite           #  write first rows to matrix
+    bne a0, s5, write_error #  branch if an issue
+    addi sp, sp, 4          # restore the stack
+
+
+
+    mul a1, s2, s3          # Calculate the number of rows and columns
+    addi a2, x0, 4           # size of 4 bytes
+    mul a1, a2, a1          # size = rows*columns*4
+    addi a3, x0, 1          # Number of elements to write to file
+    add a4, x0, a1          # Size of each element rows*columns*4
+
     mv a1, s4               # Set a1 to file descriptor
     mv a2, s1               # Pointer to write to file
-    addi a3, x0, 2          # Number of elements to write to file
-    addi a4, x0, 4          # Size of each element (4 bytes per object
+    mv s5, a3               # Backup number of elements to write to file.
 
     jal ra fwrite           #  write first rows to matrix
-    bne a0, a3, write_error #  branch if an issue
-
-
-
+    bne a0, s5, write_error #  branch if an issue
 
 
 
@@ -75,8 +108,9 @@ write_matrix:
     lw s2, 8(sp)
     lw s3, 12(sp)
     lw s4, 16(sp)
-    lw ra, 20(sp)
-    addi sp, sp 24
+    lw s5, 20(sp)
+    lw ra, 24(sp)
+    addi sp, sp 28
 
     jr ra
 
