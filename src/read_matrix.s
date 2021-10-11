@@ -39,6 +39,7 @@ read_matrix:
     sw s8, 32(sp)  #  The address of the columns
     sw ra, 36(sp)
 
+
     mv s7, a1  # Move rows pointer to s7
     mv s8, a2  # Move columns pointer to s8
 
