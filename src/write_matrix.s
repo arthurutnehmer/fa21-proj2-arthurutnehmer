@@ -32,7 +32,6 @@ write_matrix:
     sw s3  12(sp)  #  number of columns in matrix.
     sw ra, 16(sp)
 
-
     mv s0, a0  #   Save pointer to filename.
     mv s1, a1  #   Save pointer to start of matrix.
     mv s2, a2  #   Save number of rows in matrix.
