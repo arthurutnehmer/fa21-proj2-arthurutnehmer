@@ -25,16 +25,50 @@
 write_matrix:
 
     # Prologue
+    addi sp, sp, -20  #decrement stack pointer
+    sw s0, 0(sp)   # pointer to filename
+    sw s1, 4(sp)   #  pointer to start of matrix
+    sw s2, 8(sp)   #  number of rows in matrix.
+    sw s3  12(sp)  #  number of columns in matrix.
+    sw ra, 16(sp)
 
+    mv s0, a0  #   Save pointer to filename.
+    mv s1, a1  #   Save pointer to start of matrix.
+    mv s2, a2  #   Save number of rows in matrix.
+    mv s3, a3  #   Save number of columns in matrix.
 
+    addi a2, x0, 1            # set write permission to 1.
+    mv a1, a0                 # Set a1 to file string pointer
+    jal ra fopen              # Open file with a1 file name
+    addi a2, x0, -1              # set a2 to -1
+    beq a2, a0, fopen_error   #  Branch if error
 
+    mv a1, a0               # Set a1 to file descriptor
+    mv a2, s1               # set a2 to array to write to file.
+    addi a3, x0, 1              #  rows length to file
+    addi, a4, x0, 4         # 4 bytes per object
 
-
+    jal ra fwrite           #  write to bin
+    bne a0, s3, write_error #  branch if an issue
 
 
 
 
     # Epilogue
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    lw s3, 12(sp)
+    lw ra, 16(sp)
+    addi sp, sp 20
+
+    jr ra
 
 
-    ret
+fopen_error:
+    addi a1, x0, 89
+    call exit2
+
+write_error:
+    addi a1, x0, 92
+    call exit2

@@ -56,7 +56,7 @@ read_matrix:
 
 
     mv s4, a0  # set s4 to a0 (the file descriptor)
-    mv a0, s3
+    mv a0, s3  # load the constant into a0 (8 bytes)
     jal ra malloc  # call malloc to allocate 8 bytes of memory for row and column.
     beq a0, x0, exit_malloc  # check return value a0 (pointer to memory)
     mv s6, a0 # save the pointer to s6
