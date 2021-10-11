@@ -61,9 +61,6 @@ write_matrix:
     addi sp, sp, 4          # restore the stack
 
 
-
-
-
     addi sp, sp, -4         # decrement stack pointer to store
     sw s3, 0(sp)            # Save s3 at stack pointer (number of columns)
     mv a1, s4               # Set a1 to file descriptor
@@ -76,25 +73,16 @@ write_matrix:
     addi sp, sp, 4          # restore the stack
 
 
-
     mul a1, s2, s3          # Calculate the number of rows and columns
     addi a2, x0, 4           # size of 4 bytes
     mul a1, a2, a1          # size = rows*columns*4
     addi a3, x0, 1          # Number of elements to write to file
     add a4, x0, a1          # Size of each element rows*columns*4
-
     mv a1, s4               # Set a1 to file descriptor
     mv a2, s1               # Pointer to write to file
     mv s5, a3               # Backup number of elements to write to file.
-
     jal ra fwrite           #  write first rows to matrix
     bne a0, s5, write_error #  branch if an issue
-
-
-
-
-
-
 
 
     mv a1, s4                       # set a1 to file descriptor
