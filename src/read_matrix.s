@@ -27,7 +27,7 @@
 read_matrix:
 
     # Prologue
-    addi sp, sp, -32  # Make room on stack
+    addi sp, sp, -40  # Make room on stack
     sw s0, 0(sp)  #  Memory address of the file name (a0)
     sw s1, 4(sp)  #  number of rows (a1)
     sw s2, 8(sp)  #  number of columns (a2)
@@ -35,7 +35,12 @@ read_matrix:
     sw s4, 16(sp)  #  This is the file descriptor
     sw s5, 20(sp)  #  This is the allocation size.
     sw s6, 24(sp)  #  The address of the memory to return .
-    sw ra, 28(sp)
+    sw s7, 28(sp)  #  The address of the rows
+    sw s8, 32(sp)  #  The address of the columns
+    sw ra, 36(sp)
+
+    mv s7, a1  # Move rows pointer to s7
+    mv s8, a2  # Move columns pointer to s8
 
     mv s0, a0  #  set s0 to string with file name (a0)
     addi s3, x0, 8 # set s3 to 8 for size of rows/ columns and heap
@@ -64,8 +69,9 @@ read_matrix:
     jal ra fread # read 8 bytes from the file.
     bne a0, s3, read_error
     lw s1, 0(s6)  # save rows to s1
+    sw s1, 0(s7)  # save rows to address a1
     lw s2, 4(s6)  # save columns to s2
-
+    sw s2, 0(s8)  # Save columns to address a2
 
 
     mul a0, s1, s2  # calculating the size of the malloc for the array.
@@ -89,12 +95,9 @@ read_matrix:
 
 
 
-
-
-
     mv a0, s6 # set a0 to return pointer
-    mv a1, s1 # set a1 to size
-    mv a2, s2 # set a2 to columns
+    mv a1, s7 # set a1 to size
+    mv a2, s8 # set a2 to columns
 
     # Epilogue
     lw s0, 0(sp)
@@ -104,10 +107,10 @@ read_matrix:
     lw s4, 16(sp)
     lw s5, 20(sp)
     lw s6, 24(sp)
-    lw ra, 28(sp)
-    addi sp, sp 32
-
-
+    lw s7, 28(sp)
+    lw s8, 32(sp)
+    lw ra, 36(sp)
+    addi sp, sp 40
 
     jr ra
 
