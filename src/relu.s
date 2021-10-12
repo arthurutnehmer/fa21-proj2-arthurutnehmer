@@ -14,6 +14,9 @@
 # ==============================================================================
 relu:
     # Prologue
+    addi sp, sp, -4
+    sw ra, 0(sp)  # save ra
+
     add a2, x0,x0
     # check if array is equal to or less than zero
     bge x0, a1, exit_code_error
@@ -35,7 +38,9 @@ loop_start:
 
 loop_end:
     # Epilogue
-	ret
+    lw ra, 0(sp)  # save ra
+    addi sp,sp, 4
+	jr ra
 exit_code_error:
     add a1, x0, x0
     addi a1, x0, 57

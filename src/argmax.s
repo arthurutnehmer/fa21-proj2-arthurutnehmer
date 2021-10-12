@@ -16,6 +16,9 @@
 # =================================================================
 argmax:
 
+    addi sp, sp, -4
+    sw ra, 0(sp)  # save ra
+
     bge x0, a1, exit_code_error   # check if array is equal to or less than zero
     # Prologue
     add a5,x0,x0
@@ -42,7 +45,11 @@ loop_start:
 loop_end:
     # Epilogue
     sub a0, a5, a3
-	ret
+
+    lw ra, 0(sp)
+    addi sp, sp 4
+
+	jr ra
 
 exit_code_error:
     add a1, x0, x0

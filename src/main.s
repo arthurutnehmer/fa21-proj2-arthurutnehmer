@@ -15,7 +15,7 @@ main:
     mv a2, zero
 
     # call classify function
-    jal classify
+    jal ra classify
 
     # exit program normally
     jal exit

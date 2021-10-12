@@ -34,7 +34,7 @@ classify:
     sw s5, 20(sp)     # save the rows m0
     sw s6, 24(sp)     # save the columns m0
     sw s7, 28(sp)     # save the rows m1
-    sw s8, 32(sp)     # save the columns m1
+    sw a3, 32(sp)     # save the columns m1
     sw s9, 36(sp)     # save the rows input
     sw s10, 40(sp)    # save the columns input
     sw s11, 44(sp)    # our result of mat mul
@@ -43,8 +43,6 @@ classify:
     mv s3, a1   # save the file path array pointer to s3 (a1)
     mv s4, a2   # save (a2) to s4 Classification integer
 
-    # Create stack pointers that will hold the address that contains array size.
-    addi, sp, sp, -24    # create spots for 6 integers (array size)
 
 
 	# =====================================
