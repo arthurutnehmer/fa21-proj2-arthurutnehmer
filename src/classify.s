@@ -139,22 +139,15 @@ classify:
     jal ra matmul            # multiply m1 x h
 
 
-    lw a0, 16(s3)     # set a0 to write file path
-    mv a1, s0         # set a1 to 0 matrix
-    mv a2, s7         # set a2 to rows m1
-    mv a3, s10        # set a3 to columns input
-    jal ra write_matrix      # write matrix to file
-
-
-
-
-
-
     # =====================================
     # WRITE OUTPUT
     # =====================================
     # Write output matrix
-
+     lw a0, 16(s3)     # set a0 to write file path
+     mv a1, s0         # set a1 to 0 matrix
+     mv a2, s7         # set a2 to rows m1
+     mv a3, s10        # set a3 to columns input
+     jal ra write_matrix      # write matrix to file
 
 
 
@@ -164,16 +157,30 @@ classify:
     # =====================================
     # Call argmax
 
-
-
+    mv a0, s0         # set a0 to 0 (s0)
+    mul a1, s7, s10  # set a1 to rows m1 x columns input
+    jal ra argmax     # compute the argmax
+    mv s5, a0         # save argmax as (s1)
+    bne x0, a0, next  # go next if no equal to zero
 
     # Print classification
-
-
-
+    mv a1, a0         # move argmax to a1
+    jal ra print_int  # print the integer
 
     # Print newline afterwards for clarity
+    addi a1, x0,10
+    jal ra print_char # print new line
 
+next:
+
+    mv a0, s0   # free s0
+    jal ra free # frees s0
+    mv a0, s1   # free s1
+    jal ra free # frees s1
+    mv a0, s2   # free s2
+    jal ra free # frees s2
+
+    mv a0, s5
 
     # Epilogue
     lw s0, 0(sp)
@@ -191,7 +198,7 @@ classify:
     lw ra, 48(sp)
     addi sp, sp 52
 
-    ret
+    jr ra
 
 
 args_error:
