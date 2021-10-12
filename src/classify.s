@@ -161,7 +161,7 @@ classify:
     mul a1, s7, s10  # set a1 to rows m1 x columns input
     jal ra argmax     # compute the argmax
     mv s5, a0         # save argmax as (s1)
-    bne x0, a0, next  # go next if no equal to zero
+    bne x0, s4, next  # go next if no equal to zero
 
     # Print classification
     mv a1, a0         # move argmax to a1
