@@ -25,7 +25,7 @@ classify:
     bne a0, a3, args_error   # Branch if a0 has wrong # errors
 
     # Prologue
-    addi sp, sp, -48  # Decrement stack pointer
+    addi sp, sp, -52  # Decrement stack pointer
     sw s0, 0(sp)      # address to first array m0
     sw s1, 4(sp)      # address to second array m1
     sw s2, 8(sp)      # address to third array input
@@ -37,7 +37,8 @@ classify:
     sw s8, 32(sp)     # save the columns m1
     sw s9, 36(sp)     # save the rows input
     sw s10, 40(sp)    # save the columns input
-    sw ra, 44(sp)     # save ra
+    sw s11, 44(sp)    # our result of mat mul
+    sw ra, 48(sp)     # save ra
 
     mv s3, a1   # save the file path array pointer to s3 (a1)
     mv s4, a2   # save (a2) to s4 Classification integer
@@ -95,15 +96,54 @@ classify:
     # 2. NONLINEAR LAYER: ReLU(m0 * input)
     # 3. LINEAR LAYER:    m1 * ReLU(m0 * input)
 
+    mul a0, s5, s10            # set a0 to rows m0 x columns input
+    addi a2, x0, 4             # we want to mul by 4 to get size
+    mul a0, a0, a2             # mul size by 4 to get the memory size
+    jal ra malloc              # get a0 of size
+    beq a0, x0, malloc_failed  # error
+
+    mv s11, a0             # set s11 to result array
+    mv a6, a0              # set a6 to the result array
+    mv a0, s0              # set s0 to m0 address
+    mv a1, s5              # set a1 to height of m0
+    mv a2, s6              # set a1 to width of m0
+    mv a3, s2              # set a3 to input (address)
+    mv a4, s9              # set a4 to height of input
+    mv a5, s10             # set a5 to width of input
+    jal ra matmul          # multiply m0 by input and return as new matrix.
+
+    mv a0, s11             # set a0 to s11
+    mul a1, s5, s10        # set a0 to rows m0 x columns input
+    jal ra relu            # we then take the rel of s11
+
+    # register for m0 (s0) now becomes the address for 0
+    mv a0, s0         # move s0 address to a0 to clear
+    jal ra free       # clears memory attached to (s0)
 
 
 
+    mul a0, s7, s10            # set a0 to rows m1 x columns h (input)
+    addi a2, x0, 4             # we want to mul by 4 to get size
+    mul a0, a0, a2             # mul size by 4 to get the memory size
+    jal ra malloc              # get a0 of size
+    beq a0, x0, malloc_failed  # error
+    mv s0, a0                  # s0 is now o from mat mul
+
+    mv a6, a0         # set a6 to the address we got from malloc
+    mv a0, s1         # set a0 to m1 address
+    mv a1, s7         # set a1 to height of m1
+    mv a2, s8         # set a2 to width of m1
+    mv a3, s11        # set a3 to h (s11)
+    mv a4, s5         # set a4 to rows m0
+    mv a5, s10        # set a5 to columns input
+    jal ra matmul            # multiply m1 x h
 
 
-
-
-
-
+    lw a0, 16(s3)     # set a0 to write file path
+    mv a1, s0         # set a1 to 0 matrix
+    mv a2, s7         # set a2 to rows m1
+    mv a3, s10        # set a3 to columns input
+    jal ra write_matrix      # write matrix to file
 
 
 
@@ -147,12 +187,17 @@ classify:
     lw s8, 32(sp)
     lw s9, 36(sp)
     lw s10, 40(sp)
-    lw ra, 44(sp)
-    addi sp, sp 48
+    lw s11, 44(sp)
+    lw ra, 48(sp)
+    addi sp, sp 52
 
     ret
 
 
 args_error:
     addi a1, x0, 72
+    call exit2
+
+malloc_failed:
+    addi a1, x0, 88
     call exit2
