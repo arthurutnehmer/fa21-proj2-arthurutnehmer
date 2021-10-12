@@ -173,10 +173,15 @@ next:
 
     mv a0, s0   # free s0
     jal ra free # frees s0
+
     mv a0, s1   # free s1
     jal ra free # frees s1
+
     mv a0, s2   # free s2
     jal ra free # frees s2
+
+    mv a0, s3   # free s3
+    jal ra free # frees s3
 
     mv a0, s5  # set a0 to the value we want
 
