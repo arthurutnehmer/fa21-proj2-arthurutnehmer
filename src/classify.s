@@ -34,7 +34,7 @@ classify:
     sw s5, 20(sp)     # save the rows m0
     sw s6, 24(sp)     # save the columns m0
     sw s7, 28(sp)     # save the rows m1
-    sw a3, 32(sp)     # save the columns m1
+    sw s8, 32(sp)     # save the columns m1
     sw s9, 36(sp)     # save the rows input
     sw s10, 40(sp)    # save the columns input
     sw s11, 44(sp)    # our result of mat mul
