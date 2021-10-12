@@ -178,7 +178,7 @@ next:
     mv a0, s2   # free s2
     jal ra free # frees s2
 
-    mv a0, s5
+    mv a0, s5  # set a0 to the value we want
 
     # Epilogue
     lw s0, 0(sp)
